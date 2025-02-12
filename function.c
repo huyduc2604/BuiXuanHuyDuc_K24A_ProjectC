@@ -77,10 +77,10 @@ void addBook(int *countBook){
 
     // Them ngay xuat ban
 //    do {
-    	 
-        printf("Moi ban nhap ngay xuat ban (dd mm yyyy): ");
-        scanf("%d %d %d", &book[*countBook].publication.day, &book[*countBook].publication.month, &book[*countBook].publication.year);
-        getchar();
+//    	 
+//        printf("Moi ban nhap ngay xuat ban (dd mm yyyy): ");
+//        scanf("%d %d %d", &book[*countBook].publication.day, &book[*countBook].publication.month, &book[*countBook].publication.year);
+//        getchar();
 //        if (!isValidDate(book[*countBook].publication.day, book[*countBook].publication.month, book[*countBook].publication.year)){
 //            printf("Ngay khong hop le\n");
 //        }
@@ -118,8 +118,8 @@ void editBook(int countBook){
             printf("Nhap ten moi: ");
             fgets(book[i].title, sizeof(book[i].title), stdin);
             book[i].title[strcspn(book[i].title, "\n")] = '\0';
-            printf("Nhap ngay xuat ban moi (dd mm yyyy): ");
-            scanf("%d %d %d", &book[i].publication.day, &book[i].publication.month, &book[i].publication.year);
+//            printf("Nhap ngay xuat ban moi (dd mm yyyy): ");
+//            scanf("%d %d %d", &book[i].publication.day, &book[i].publication.month, &book[i].publication.year);
             getchar();
             printf("Nhap ten tac gia moi: ");
             fgets(book[i].author, sizeof(book[i].author), stdin);
@@ -212,8 +212,3 @@ void searchBook(int countBook){
         printf("Khong tim thay sach nao voi ten %s!\n", title);
     }
 }
-
-
-
- 	
-

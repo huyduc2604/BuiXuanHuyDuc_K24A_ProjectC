@@ -9,7 +9,7 @@ int main(int argc, char *argv[]) {
 	do{
 		showMenuBook();
 		scanf("%d", &choose);
-		getchar();
+//		getchar();
 		switch(choose){
 			case 1:
 				addBook(&countBook);
@@ -28,6 +28,7 @@ int main(int argc, char *argv[]) {
                 break;
             case 6:
                	searchBook(countBook);
+               	break;
             case 0:
                 printf("Thoat chuong trinh. Tam biet!\n");
                 return;
