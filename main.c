@@ -5,7 +5,6 @@
 /* run this program using the console pauser or add your own getch, system("pause") or input loop */
 
 int main(int argc, char *argv[]) {
-	int choose, countBook=0;
 	menu();
 //	do{
 //		showMenuBook();
@@ -13,19 +12,19 @@ int main(int argc, char *argv[]) {
 //		getchar();
 //		switch(choose){
 //			case 1:
-//				addBook(&countBook);
+//				addBook(book,&countBook);
 //				break;
 //			case 2:
-//				showBook(countBook);
+//				showBook(book, countBook);
 //				break;
 //			case 3:
-//				editBook(countBook);
+//				editBook(book,countBook);
 //                break; 
 //            case 4:
-//				deleteBook(countBook);
+//				deleteBook(book,countBook);
 //                break;
 //            case 5:
-//                sortBooks(countBook);
+//                sortBooks(book,countBook);
 //                break;
 //            case 6:
 //               	searchBook(countBook);

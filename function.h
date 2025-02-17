@@ -3,34 +3,34 @@
 #ifndef FUNCTION_H
 #define FUNCTION_H
 
-
-void showMenu();
+void menu();
+//void showMenu();
 void login();
-void isID();
-void isTitle();
-bool isValidDate(int day, int month, int year); //ngay san xuat sach
+//void isID();
+//void isTitle();
+int isValidDate(int day, int month, int year); //ngay san xuat sach
 
 //them sach
-void addBook(struct Book book[], int *countBook);
+void addBook() ;
 
 //hien thi sach
-void showBook(struct Book book[], int countBook);
+void showBookshowBook(int countBook);
 
 //chinh sua sach
-void editBook(struct Book book[], int countBook);
+void editBook(int countBook);
 
 //Xoa sach
-void deleteBook(struct Book book[], int *countBook);
+void deleteBook(int *countBook);
 
 //sap xep sach
-void sortBooks(struct Book book[], int countBook);
+void sortBooks(struct Book books[], int countBook);
 
 //tim kiem sach
-void searchBook(struct Book book[],int countBook);
+void searchBook(int countBook);
 
-void showMenuBook();
-void writeBooksToFile(const char* filename, struct Book books[], int numBooks) ;
-void readBooksFromFile(const char* filename, struct Book books[], int *numBooks) ;
+//void showMenuBook();
+void writeBooksToFile(const char* filename, struct Book books[], int numBooks);
+void readBooksFromFile(const char* filename, struct Book books[], int *countBook);
 
 #endif
 

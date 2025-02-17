@@ -1,11 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #include "function.h"
-//#include "datatype.h"
+#include "datatype.h"
 #define MAX_BOOKS 100
-
-const char *filebooks = "C:\\Users\\Admin\\Desktop\\projectC\\books.bin";
+struct Book books[MAX_BOOKS];
+int countBook=0;
+const char *filebooks = "C:\\Users\\Admin\\Desktop\\projectC\\books.txt";
 
 void login() {
     char email[50];
@@ -20,15 +22,16 @@ void login() {
 
         printf("+------------------------------------------+\n");
         
-        // Yêu cau nhap email
+        // Y?u cau nhap email
         printf("Email: ");
         scanf("%s", email);
         
         // Yeu cau nhap mat khau
         printf("Password: ");
         scanf("%s", password);
+        fflush (stdin);
         
-        // Kiem tra thông tin dang nhap
+        // Kiem tra th?ng tin dang nhap
         if (strcmp(email, "buixuanhuyduc") == 0 && strcmp(password, "1") == 0) {
             printf("Login successful!\n");
             loginSuccessful = 1;
@@ -37,28 +40,14 @@ void login() {
         }
     } while (!loginSuccessful);
 }
-
-bool isValidDate(int day, int month, int year){
-    if (year < 1 || month < 1 || month > 12 || day < 1) {
-        return false;
-    }
-    int daysInMonth[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
-    if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)) {
-        daysInMonth[1] = 29;
-    }
-    if (day > daysInMonth[month - 1]){
-        return false;
-    }
-    return true;
-}
-void writeBooksToFile(const char* filename, struct Book books[], int numBooks) {// ham ghi sach 
-    FILE *file = fopen(filebooks, "w");
+void writeBooksToFile(const char* filename, struct Book books[], int countBook) {
+    FILE *file = fopen(filename, "w");
     if (file == NULL) {
-        perror("Error opening file!\n");
+        perror("Error opening file!");
         return;
     }
-    int i;
-    for (i = 0; i < numBooks; i++) {
+    int i; 
+    for (i = 0; i < countBook; i++) {
         fprintf(file, "%s %s %s %d %d %02d/%02d/%04d\n",
                 books[i].bookId,
                 books[i].title,
@@ -72,10 +61,10 @@ void writeBooksToFile(const char* filename, struct Book books[], int numBooks) {
     fclose(file);
 }
 
-void readBooksFromFile(const char* filename, struct Book books[], int *numBooks) {// ham doc danh sach 
-    FILE *file = fopen(filebooks, "r");
+void readBooksFromFile(const char* filename, struct Book books[], int *countBook) {
+    FILE *file = fopen(filename, "r");
     if (file == NULL) {
-        perror("Error opening file!\n");
+        perror("Error opening file!");
         return;
     }
     int i = 0;
@@ -90,118 +79,124 @@ void readBooksFromFile(const char* filename, struct Book books[], int *numBooks)
                   &books[i].publication.year) != EOF) {
         i++;
     }
-    *numBooks = i;
+    *countBook = i;
     if (ferror(file)) {
         perror("Error reading from file");
     }
     fclose(file);
 }
 
-// them sach
 
 
-void addBook(struct Book books[], int *numBooks) {
-    FILE *file = fopen(filebooks, "a"); // M? file v?i ch? ð? ghi ti?p
-    if (file == NULL) {
-        printf("L?i m? file!\n");
-        return;
-    }
 
-    struct Book newBook; // Tao bien tam de tranh loi bo nho
+//bool isValidDate(int day, int month, int year) {
+//    if (year < 1 || month < 1 || month > 12 || day < 1) {
+//        return false;
+//    }
+//    int daysInMonth[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+//    if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)) {
+//        daysInMonth[1] = 29;
+//    }
+//    if (day > daysInMonth[month - 1]) {
+//        return false;
+//    }
+//    return true;
+//}
 
-    // Nhap id sach
+
+
+void addBook(int *countBook) {
     do {
-        printf("Nhap ID book (toi da 9 ki tu): ");
-        scanf("%9s", newBook.bookId);
-        getchar(); // Xoa ki tu xuong dong trong butter
-    }while (strlen(newBook.bookId) == 0);
-
-    // Nhap tieu de sach
-    printf("Nhap tieu de sach: ");
-    fgets(newBook.title, sizeof(newBook.title), stdin);
-    newBook.title[strcspn(newBook.title, "\n")] = '\0'; // Xoa ki tu xuong dong
-
-    // Nh?p tác gi?
-    printf("Nhap ten tac gia: ");
-    fgets(newBook.author, sizeof(newBook.author), stdin);
-    newBook.author[strcspn(newBook.author, "\n")] = '\0';
-
-    // Nh?p s? lý?ng
-    do{
-        printf("Nhap so luong sach: ");
-        if (scanf("%d", &newBook.quantity) != 1 || newBook.quantity < 0){
-            printf("So luong khong hop li vui long nhap lai.\n");
-            while (getchar() != '\n'); // Xoa bo dem
-        }else{
-            break;
+        printf("Moi ban nhap ID: ");
+        getchar();
+        fgets(book[*countBook].bookId, sizeof(book[*countBook].bookId), stdin);
+        book[*countBook].bookId[strcspn(book[*countBook].bookId, "\n")] = '\0';
+        if (strlen(book[*countBook].bookId) == 0){
+            printf("ID khong duoc de trong!\n");
+        } else if (strlen(book[*countBook].bookId) > 9) {
+            printf("ID qua dai toi da 9 ky tu\n");
         }
-    }while(1);
-    getchar();
+    } while (strlen(book[*countBook].bookId) == 0 || strlen(book[*countBook].bookId) > 9);
 
-    // Nhap gia sach
-    do{
-        printf("Nhap gia sach: ");
-        if (scanf("%d", &newBook.price) != 1 || newBook.price < 0){
-            printf("Gia sach khong hop le vui long nhap lai.\n");
-            while (getchar() != '\n');
-        }else{
-            break;
-        }
-    } while (1);
-    getchar();
-
-    // Nhap ngay xuat ban
     do {
-        printf("Nhap ngay xuat ban (dd mm yyyy): ");
-        if (scanf("%d %d %d", &newBook.publication.day, &newBook.publication.month, &newBook.publication.year) != 3){
-            printf("Ngay xuat ban khong hop le vui long nhap lai.\n");
+        printf("Moi ban nhap tieu de: ");
+        fgets(book[*countBook].title, sizeof(book[*countBook].title), stdin);
+        book[*countBook].title[strcspn(book[*countBook].title, "\n")] = '\0';
+        if (strlen(book[*countBook].title) == 0) {
+            printf("Tieu de khong duoc de trong\n");
+        } else if (strlen(book[*countBook].title) > 29) {
+            printf("Tieu de qua dai toi da 29 ky tu\n");
+        }
+    } while (strlen(book[*countBook].title) == 0 || strlen(book[*countBook].title) > 29);
+
+    do {
+        printf("Moi ban nhap tac gia: ");
+        fgets(book[*countBook].author, sizeof(book[*countBook].author), stdin);
+        book[*countBook].author[strcspn(book[*countBook].author, "\n")] = '\0';
+        if (strlen(book[*countBook].author) == 0) {
+            printf("Tac gia khong duoc de trong!\n");
+        } else if (strlen(book[*countBook].author) > 19) {
+            printf("Ten tac gia qua dai toi da 19 ky tu\n");
+        }
+    } while (strlen(book[*countBook].author) == 0 || strlen(book[*countBook].author) > 19);
+
+    do {
+        printf("Moi ban nhap so luong: ");
+        if (scanf("%d", &book[*countBook].quantity) != 1 || book[*countBook].quantity <= 0) {
+            getchar();
+            printf("So luong phai la so nguyen duong\n");
             while (getchar() != '\n');
         } else {
             break;
         }
     } while (1);
-    getchar();
 
-    // Ghi du lieu vao file
-    fprintf(file, "%s %s %s %d %d %02d/%02d/%04d\n",
-            newBook.bookId, newBook.title, newBook.author,
-            newBook.quantity, newBook.price,
-            newBook.publication.day, newBook.publication.month, newBook.publication.year);
+    do {
+        printf("Moi ban nhap gia: ");
+        if (scanf("%d", &book[*countBook].price) != 1 || book[*countBook].price <= 0) {
+            getchar();
+            printf("Gia phai la so nguyen duong\n");
+            while (getchar() != '\n');
+        } else {
+            break;
+        }
+    } while (1);
 
-    fclose(file); // dong file
+    do {
+        printf("Moi ban nhap ngay xuat ban (dd mm yyyy): ");
+        scanf("%d %d %d", &book[*countBook].publication.day, &book[*countBook].publication.month, &book[*countBook].publication.year);
+        getchar();
+        if (!isValidDate(book[*countBook].publication.day, book[*countBook].publication.month, book[*countBook].publication.year)) {
+            printf("Ngay khong hop le\n");
+        }
+    } while (!isValidDate(book[*countBook].publication.day, book[*countBook].publication.month, book[*countBook].publication.year));
 
-    // Them vao danh sach trong bo nho
-    books[*numBooks] = newBook;
-    (*numBooks)++;
-
-    printf("Them sach thanh cong!\n");
+    (*countBook)++;
+    printf("Them sach thanh cong\n");
 }
 
 
-// Hien thi sach
-void showBook(struct Book book[], int countBook) {
+
+
+
+
+void showBook(int countBook){
     if (countBook == 0) {
-        printf("Khong co danh sach hien thi\n");
+        printf("Khong co sach de hien thi\n");
         return;
     }
-
-    printf("\n========================================================================================================================\n");
-    printf("| %-12s | %-30s | %-20s | %-10s | %-10s | %-12s |\n", "ID", "TIEU DE", "TAC GIA", "SO LUONG", "GIA", "NGAY XUAT BAN");
-    printf("------------------------------------------------------------------------------------------------------------------------\n");
-	int i; 
+    printf("\n=============================== All Book ==============================\n\n");
+    printf("|======|==============|===============|========|==========|===============|\n");
+    printf("|%-6s|%-14s|%-15s|%-8s|%-10s|%-15s|\n", "ID", "TIEU DE", "TAC GIA", "SO LUONG", "GIA", "NGAY XUAT BAN");
+    printf("|======|==============|===============|========|==========|===============|\n");
+    int i; 
     for (i = 0; i < countBook; i++) {
-        printf("| %-12s | %-30s | %-20s | %-10d | %-12d | %02d/%02d/%04d |\n",
-               book[i].bookId, book[i].title, book[i].author,
-               book[i].quantity, book[i].price,
-               book[i].publication.day, book[i].publication.month, book[i].publication.year);
+        printf("|%-6s|%-14s|%-15s|%-8d|%-10d|%02d/%02d/%04d|\n", book[i].bookId, book[i].title, book[i].author, book[i].quantity, book[i].price, book[i].publication.day, book[i].publication.month, book[i].publication.year);
+        printf("|======|==============|===============|========|==========|===============|\n");
     }
-
-    printf("========================================================================================================================\n");
 }
 
-
-//chinh sua sach
-void editBook(struct Book book[], int countBook){
+void editBook(int countBook){
     char id[10];
     printf("Nhap ID sach can chinh sua: ");
     scanf("%s", id);
@@ -231,8 +226,7 @@ void editBook(struct Book book[], int countBook){
     printf("Khong tim thay sach voi ID %s!\n", id);
 }
 
-//Xoa sach
-void deleteBook(struct Book book[], int *countBook){
+void deleteBook(int *countBook){
     char id[10];
     printf("Nhap ID sach can xoa: ");
     scanf("%s", id);
@@ -261,14 +255,13 @@ void deleteBook(struct Book book[], int *countBook){
 //    printf("Khong tim thay sach voi ID %s!\n", id);
 }
 
-//sap xep sach
-void sortBooks(struct Book book[], int countBook){
+void sortBooks(struct Book books[], int countBook){
     if (countBook < 2){
         printf("Khong co du lieu de sap xep!\n");
         return;
     }
     int order;
-    printf("Chon thu tu sap xep: \n1. Tang dan \n2. Giam dan: \n");
+    printf("Chon thu tu sap xep: 1. Tang dan 2. Giam dan: ");
     if (scanf("%d", &order) != 1 || (order != 1 && order != 2)){
         printf("Lua chon khong hop le!\n");
         while (getchar() != '\n'); // Xóa b? nh? ð?m ð?u vào
@@ -292,32 +285,38 @@ void sortBooks(struct Book book[], int countBook){
     printf("Sap xep sach theo gia tien thanh cong!\n");
 }
 
-//tim kiem sach
-void searchBook(struct Book book[],int countBook){
+void searchBook(int countBook){
     char title[50];
     printf("Nhap ten sach can tim: ");
-    scanf(" %[^\n]", title);
-    getchar();
-    printf("\n%-10s %-30s %-15s %-20s %-10s\n", "ID", "Ten", "Ngay Xuat Ban", "Tac Gia", "Gia");
-    printf("--------------------------------------------------------------------------\n");
+    getchar(); // Xoa bo nho dem tranh lap chuoi 
+    fgets(title, sizeof(title), stdin);
+    title[strcspn(title, "\n")] = '\0'; // xoa ki tu xuong dong 
+
+    printf("\n%-10s %-30s %-15s %-10s %-15s\n", "ID", "Ten", "Tac Gia", "Gia", "Ngay Xuat Ban");
+    printf("----------------------------------------------------------------------------\n");
+
     int found = 0;
-    int i;
+    int i; 
     for (i = 0; i < countBook; i++){
-        if (strstr(book[i].title, title) != NULL){
-            printf("%-10s %-30s %-15s %-20s %-10d\n", book[i].bookId, book[i].title, book[i].publication.day, book[i].author, book[i].price);
+        if (strstr(books[i].title, title) == 0 ){ // Kiem tra chuoi con
+            printf("%-10s %-30s %-15s %-10d %02d/%02d/%04d\n", 
+                   books[i].bookId, books[i].title, books[i].author, 
+                   books[i].price, 
+                   books[i].publication.day, books[i].publication.month, books[i].publication.year);
             found = 1;
         }
-	}
+    }
     if (!found){
-        printf("Khong tim thay sach nao voi ten %s!\n", title);
+        printf("Khong tim thay sach nao voi ten \"%s\"!\n", title);
     }
 }
 
+
+
 void menu(){
-	struct Book books[MAX_BOOKS];
+	login();
 	int choice;
 	int countBook=0;
-	login();
 	do{
 		printf("\n======== MENU ========\n");
 	    printf("======================\n");
@@ -333,20 +332,17 @@ void menu(){
 	    scanf("%d",&choice);
 	    switch (choice) {
             case 1:
-				addBook(books, &countBook);                
+				addBook(&countBook);                
 				break;
             case 2:
-            	readBooksFromFile(filebooks, books, &countBook);
-                showBook(books, countBook);
+                showBook(countBook);
                 break;
             case 3:
-            	readBooksFromFile(filebooks, books, &countBook);
-                editBook(books, countBook);
-                writeBooksToFile(filebooks, books, &countBook);
+                editBook(countBook);
                 break;
                 
             case 4:
-            	deleteBook(books, &countBook);
+            	deleteBook(&countBook);
             	break;
             	
             case 5:
@@ -354,7 +350,7 @@ void menu(){
                 break;
 				
 			case 6:
-				searchBook(books, countBook);
+				searchBook(countBook);
 				break;
 				
             case 0:
@@ -366,3 +362,139 @@ void menu(){
         }
 	} while(choice != 0);
 } 
+
+//
+//int isNotEmpty(char str[]) {
+//    return strlen(str) > 0;
+//}
+//
+//int isUniqueID(struct Book books[], int countBook, char id[]) { 
+//	int i=0; 
+//	for (i; i < countBook; i++) {
+//        if (strcmp(books[i].bookId, id) == 0) {
+//            return 0;
+//        }
+//    }
+//    return 1;
+//}
+//
+//int isUniqueTitle(struct Book books[], int countBook, char title[]) {
+//    int i=0; 
+//	for (i; i < countBook; i++) {
+//        if (strcmp(books[i].title, title) == 0) {
+//            return 0;
+//        }
+//    }
+//    return 1;
+//}
+//
+int isValidDate(int day, int month, int year) {
+    if (year < 1000 || year > 9999 || month < 1 || month > 12 || day < 1) {
+        return 0;
+    }
+    int daysInMonth[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    if (month == 2 && ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0)) {
+        daysInMonth[2] = 29;
+    }
+    return day <= daysInMonth[month];
+}
+//
+//
+//
+//void addBook(int *countBook) {
+//    struct Book newBook;
+//
+//    while (1) {
+//        printf("Moi ban nhap ID: ");
+//        fgets(newBook.bookId, sizeof(newBook.bookId), stdin);
+//        newBook.bookId[strcspn(newBook.bookId, "\n")] = '\0';
+//
+//        if (!isNotEmpty(newBook.bookId)) {
+//            printf("ID khong duoc de trong!\n");
+//            continue;
+//        }
+//        if (strlen(newBook.bookId) > 9) {
+//            printf("ID qua dai, toi da 9 ky tu\n");
+//            continue;
+//        }
+//        if (!isUniqueID(books, countBook, newBook.bookId)) {
+//            printf("ID da ton tai! Moi nhap lai.\n");
+//            continue;
+//        }
+//        break;
+//    }
+//
+//    while (1) {
+//        printf("Moi ban nhap tieu de: ");
+//        fgets(newBook.title, sizeof(newBook.title), stdin);
+//        newBook.title[strcspn(newBook.title, "\n")] = '\0';
+//
+//        if (!isNotEmpty(newBook.title)) {
+//            printf("Tieu de khong duoc de trong\n");
+//            continue;
+//        }
+//        if (strlen(newBook.title) > 29) {
+//            printf("Tieu de qua dai, toi da 29 ky tu\n");
+//            continue;
+//        }
+//        if (!isUniqueTitle(books, countBook, newBook.title)) {
+//            printf("Tieu de da ton tai! Moi nhap lai.\n");
+//            continue;
+//        }
+//        break;
+//    }
+//
+//    while (1) {
+//        printf("Moi ban nhap tac gia: ");
+//        fgets(newBook.author, sizeof(newBook.author), stdin);
+//        newBook.author[strcspn(newBook.author, "\n")] = '\0';
+//
+//        if (!isNotEmpty(newBook.author)) {
+//            printf("Tac gia khong duoc de trong!\n");
+//            continue;
+//        }
+//        if (strlen(newBook.author) > 19) {
+//            printf("Ten tac gia qua dai, toi da 19 ky tu\n");
+//            continue;
+//        }
+//        break;
+//    }
+//
+//    while (1) {
+//        printf("Moi ban nhap so luong: ");
+//        if (scanf("%d", &newBook.quantity) != 1 || newBook.quantity <= 0) {
+//            printf("So luong phai la so nguyen duong\n");
+//            while (getchar() != '\n'); // Xóa b? nh? ð?m
+//            continue;
+//        }
+//        getchar(); // Xóa b? nh? ð?m sau scanf
+//        break;
+//    }
+//
+//    while (1) {
+//        printf("Moi ban nhap gia: ");
+//        if (scanf("%d", &newBook.price) != 1 || newBook.price <= 0) {
+//            printf("Gia phai la so nguyen duong\n");
+//            while (getchar() != '\n');
+//            continue;
+//        }
+//        getchar();
+//        break;
+//    }
+//
+//    while (1) {
+//        printf("Moi ban nhap ngay xuat ban (dd mm yyyy): ");
+//        if (scanf("%d %d %d", &newBook.publication.day, &newBook.publication.month, &newBook.publication.year) != 3 ||
+//            !isValidDate(newBook.publication.day, newBook.publication.month, newBook.publication.year)) {
+//            printf("Ngay khong hop le\n");
+//            while (getchar() != '\n');
+//            continue;
+//        }
+//        getchar();
+//        break;
+//    }
+//
+//    books[*countBook] = newBook;
+//    countBook++;
+//    printf("Them sach thanh cong!\n");
+//}
