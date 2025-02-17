@@ -6,8 +6,8 @@
 void menu();
 //void showMenu();
 void login();
-//void isID();
-//void isTitle();
+void isIDBook();
+void isTitle();
 int isValidDate(int day, int month, int year); //ngay san xuat sach
 
 //them sach
