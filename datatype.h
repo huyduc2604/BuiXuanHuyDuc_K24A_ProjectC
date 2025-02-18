@@ -3,7 +3,8 @@
 #define DATATYPE_H  // ??nh nghia DATATYPE_H
 #include <stdbool.h>
 #define MAX_STUDENTS 100
-
+#define MAX_BOOKS 100
+#define MAX_MEMBERS 100
 struct Date{
 	int month,day,year;
 };
@@ -17,13 +18,25 @@ struct Book{
 	struct Date publication;
 };
 struct Book book[100];
-
-struct Menber{
+//struct Book library[MAX_BOOKS];  // Khai báo bi?n library ch?a danh sách sách
+struct Member{
 	char memberId[10];
 	char name[20];
 	char phone[10];
 	char status[10];
 	struct Book BrrowedBooks[];
 };
-struct Menber menber[100];
+struct Admin {
+    char username[50];
+    char password[50];
+    int loginAttempts;
+    int isLocked; // 0: active, 1: locked
+};
+
+
+struct Member members[MAX_MEMBERS];
+
+struct Member member[100];
+
+
 #endif
