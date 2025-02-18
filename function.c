@@ -40,26 +40,6 @@ void login() {
         }
     } while (!loginSuccessful);
 }
-void writeBooksToFile(const char* filename, struct Book books[], int countBook) {
-    FILE *file = fopen(filename, "w");
-    if (file == NULL) {
-        perror("Error opening file!");
-        return;
-    }
-    int i; 
-    for (i = 0; i < countBook; i++) {
-        fprintf(file, "%s %s %s %d %d %02d/%02d/%04d\n",
-                books[i].bookId,
-                books[i].title,
-                books[i].author,
-                books[i].quantity,
-                books[i].price,
-                books[i].publication.day,
-                books[i].publication.month,
-                books[i].publication.year);
-    }
-    fclose(file);
-}
 
 void readBooksFromFile(const char* filename, struct Book books[], int *countBook) {
     FILE *file = fopen(filename, "r");
@@ -82,6 +62,27 @@ void readBooksFromFile(const char* filename, struct Book books[], int *countBook
     *countBook = i;
     if (ferror(file)) {
         perror("Error reading from file");
+    }
+    fclose(file);
+}
+
+void writeBooksToFile(const char* filename, struct Book books[], int countBook){
+    FILE *file = fopen(filename, "w");
+    if (file == NULL) {
+        perror("Error opening file!");
+        return;
+    }
+    int i; 
+    for (i = 0; i < countBook; i++) {
+        fprintf(file, "%s %s %s %d %d %02d/%02d/%04d\n",
+                books[i].bookId,
+                books[i].title,
+                books[i].author,
+                books[i].quantity,
+                books[i].price,
+                books[i].publication.day,
+                books[i].publication.month,
+                books[i].publication.year);
     }
     fclose(file);
 }
@@ -394,9 +395,10 @@ void menu(){
 	login();
 	int choice;
 	int countBook=0;
+	
 	do{
-		printf("\n======== MENU ========\n");
-	    printf("======================\n");
+		printf("\n===================MENU====================\n");
+	    printf("===========================================\n");
 	    printf("[1]. Them sach moi\n");
 	    printf("[2]. Hien thi sach\n");
 	    printf("[3]. Chinh sua thong tin sach\n");
@@ -404,7 +406,7 @@ void menu(){
 	    printf("[5]. Sap xep sach theo gia tien\n");
 	    printf("[6]. Tim kiem sach\n");
 	    printf("[0]. Thoat chuong trinh quay lai MENU chinh\n");
-	    printf("======================\n");
+	    printf("===========================================\n");
 	    printf("Nhap lua chon cua ban: ");
 	    scanf("%d",&choice);
 	    fflush(stdin); 
@@ -441,3 +443,158 @@ void menu(){
 	} while(choice != 0);
 } 
 
+
+
+//menu dang chinh
+
+//void manageCustomers() {
+//    int choice;
+//    do {
+//        printf("\n========= QUAN LY KHACH HANG =========\n");
+//        printf("[1]. Them khach hang moi\n");
+//        printf("[2]. Hien thi danh sach khach hang\n");
+//        printf("[3]. Chinh sua thong tin khach hang\n");
+//        printf("[4]. Xoa khach hang\n");
+//        printf("[0]. Quay lai menu chinh\n");
+//        printf("=====================================\n");
+//        printf("Nhap lua chon cua ban: ");
+//        scanf("%d", &choice);
+//        fflush(stdin);
+//
+//        switch (choice) {
+//            case 1:
+//                addCustomer();
+//                break;
+//            case 2:
+//                showCustomers();
+//                break;
+//            case 3:
+//                editCustomer();
+//                break;
+//            case 4:
+//                deleteCustomer();
+//                break;
+//            case 0:
+//                printf("Quay lai menu chinh...\n");
+//                return;
+//            default:
+//                printf("Lua chon khong hop le. Vui long nhap lai!\n");
+//                break;
+//        }
+//    } while (choice != 0);
+//}
+//
+//void showMainMenu(){
+//	printf("\n|=========== MENU ===========|\n");
+//	
+//	printf("|============================|\n");
+//
+//	printf("| [1]. Book Management       |\n");
+//	printf("| [2]. Customer Management   |\n");
+//	printf("| [3]. Admin                 |\n");
+//	printf("| [0]. Exit The Program      |\n");
+//	printf("|============================|\n");
+//	printf(" Enter The Choice: ");
+//}
+//
+//void menu(){
+//	int choose,chooseMain,countBook=0,countCustomer=0,countAdmin=0;
+//	int choice;
+////	int countBook=0;
+//do {
+//	login();
+//	showMainMenu();
+//        scanf("%d",&chooseMain);
+//        getchar();
+//        switch(chooseMain){
+//        	case 1:
+//        		showMainMenu();
+//				int choice;
+//				int countBook=0;
+//				do{
+//				printf("\n===================MENU====================\n");
+//	   			printf("===========================================\n");
+//	  			printf("[1]. Them sach moi\n");
+//	   			 printf("[2]. Hien thi sach\n");
+//	   			 printf("[3]. Chinh sua thong tin sach\n");
+//				    printf("[4]. Xoa sach\n");
+//				    printf("[5]. Sap xep sach theo gia tien\n");
+//				    printf("[6]. Tim kiem sach\n");
+//				    printf("[0]. Thoat chuong trinh quay lai MENU chinh\n");
+//				    printf("===========================================\n");
+//				    printf("Nhap lua chon cua ban: ");
+//				    scanf("%d",&choice);
+//				    fflush(stdin); 
+//	   			 switch (choice) {
+//          			  case 1:
+//						addBook(&countBook);                
+//						break;
+//		            case 2:
+//		                showBook(countBook);
+//		                break;
+//		            case 3:
+//		                editBook(countBook);
+//		                break;
+//		                
+//		            case 4:
+//		            	deleteBook(&countBook);
+//		            	break;
+//		            	
+//		            case 5:
+//						sortBooks(books, countBook);
+//		                break;
+//						
+//					case 6:
+//						searchBook(countBook);
+//						break;
+//						
+//		            case 0:
+//		                printf("Exiting the program. Goodbye!\n");
+//		                return;
+//		            default:
+//		                printf("Invalid choice. Please try again.\n");
+//		                break;
+//		        }
+//			} while(choice != 0);
+//		} 
+//        	case 2:
+//    		do {
+//	        printf("\n========= QUAN LY KHACH HANG =========\n");
+//	        printf("[1]. Them khach hang moi\n");
+//	        printf("[2]. Hien thi danh sach khach hang\n");
+//	        printf("[3]. Chinh sua thong tin khach hang\n");
+//	        printf("[4]. Xoa khach hang\n");
+//	        printf("[0]. Quay lai menu chinh\n");
+//	        printf("=====================================\n");
+//	        printf("Nhap lua chon cua ban: ");
+//	        scanf("%d", &choice);
+//	        fflush(stdin);
+//
+//        switch (choice) {
+//            case 1:
+//                addCustomer();
+//                break;
+//            case 2:
+//                showCustomers();
+//                break;
+//            case 3:
+//                editCustomer();
+//                break;
+//            case 4:
+//                deleteCustomer();
+//                break;
+//            case 0:
+//                printf("Quay lai menu chinh...\n");
+//                return;
+//            default:
+//                printf("Lua chon khong hop le. Vui long nhap lai!\n");
+//                break;
+//        }
+//    } while (choice != 0);
+//                break;
+//            case 3:
+//            	
+//            	break;
+//        }
+//    } while(chooseMain!=0);
+//}
